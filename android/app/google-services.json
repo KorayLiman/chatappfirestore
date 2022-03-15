@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "776047144296",
+    "project_id": "nchat-35011",
+    "storage_bucket": "nchat-35011.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:776047144296:android:c590eb4c1a5e1e07857add",
+        "android_client_info": {
+          "package_name": "com.example.chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "776047144296-523hcle3gveogqm0k4a25vkaa0firddv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.chat",
+            "certificate_hash": "542f0f7ba0ad091c56e687e5c22f6824835d2405"
+          }
+        },
+        {
+          "client_id": "776047144296-egnhmnff5j8l4r7afmdubbtqnqskcvdi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3V9xFid2hKNeD_YWCSBLFth1ZZ9FOURg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "776047144296-egnhmnff5j8l4r7afmdubbtqnqskcvdi.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "776047144296-9dnj87u7ne3o0qltrjkm6uc0u7ct50fm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.korayliman.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
