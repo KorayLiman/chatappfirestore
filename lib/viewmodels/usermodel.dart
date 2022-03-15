@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chat/locator.dart';
 import 'package:chat/models/usermodel.dart';
 import 'package:chat/repository/userrepository.dart';
@@ -22,6 +24,9 @@ class UserModel with ChangeNotifier implements AuthBase {
     notifyListeners();
   }
 
+  UserModel() {
+    currentUser();
+  }
   @override
   Future<UserP?> currentUser() async {
     try {
@@ -82,20 +87,17 @@ class UserModel with ChangeNotifier implements AuthBase {
   @override
   Future<UserP?> createUserWithEmailandPassword(
       String? email, String? pw) async {
-    try {
-      if (_emailpwControl(email!, pw!)) {
+    if (_emailpwControl(email!, pw!)) {
+      try {
         viewstate = ViewState.busy;
         _userP =
             await _userRepository.createUserWithEmailandPassword(email, pw);
         return _userP;
-      } else {
-        return null;
+      } finally {
+        viewstate = ViewState.idle;
       }
-    } catch (error) {
-      print(error);
+    } else {
       return null;
-    } finally {
-      viewstate = ViewState.idle;
     }
   }
 
@@ -109,9 +111,6 @@ class UserModel with ChangeNotifier implements AuthBase {
       } else {
         return null;
       }
-    } catch (error) {
-      print(error);
-      return null;
     } finally {
       viewstate = ViewState.idle;
     }
@@ -132,5 +131,19 @@ class UserModel with ChangeNotifier implements AuthBase {
       emailerrormessage = null;
     }
     return result;
+  }
+
+  Future<bool> updateUserName(String userId, String yeniUserName) async {
+    var sonuc = await _userRepository.updateUserName(userId, yeniUserName);
+    if (sonuc) {
+      _userP!.userName = yeniUserName;
+    }
+
+    return sonuc;
+  }
+
+  Future<String> uploadFile(String userId, String fileType, File? image) async {
+    var link = await _userRepository.uploadFile(userId, fileType, image);
+    return link;
   }
 }

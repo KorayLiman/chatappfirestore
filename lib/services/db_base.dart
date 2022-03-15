@@ -4,4 +4,5 @@ import 'package:firebase_auth/firebase_auth.dart';
 abstract class DBBase {
   Future<bool> saveUser(UserP user);
   Future<UserP> readUser(String userId);
+  Future<bool> updateUserName(String userID, String yeniUserName);
 }

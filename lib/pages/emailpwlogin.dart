@@ -1,8 +1,11 @@
+import 'package:chat/common_widgets/platformduyarlialertdiyalog.dart';
 import 'package:chat/common_widgets/socialloginbuttons.dart';
+import 'package:chat/exceptions.dart';
 import 'package:chat/models/usermodel.dart';
 import 'package:chat/pages/homepage.dart';
 import 'package:chat/viewmodels/usermodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class EmailPwLoginPage extends StatefulWidget {
@@ -67,7 +70,10 @@ class _EmailPwLoginPageState extends State<EmailPwLoginPage> {
                               }
                             },
                             keyboardType: TextInputType.emailAddress,
-                            decoration: InputDecoration(errorText: _usermodel.emailerrormessage == null? null: _usermodel.emailerrormessage,
+                            decoration: InputDecoration(
+                                errorText: _usermodel.emailerrormessage == null
+                                    ? null
+                                    : _usermodel.emailerrormessage,
                                 prefixIcon: Icon(Icons.mail),
                                 hintText: "Mail giriniz",
                                 label: const Text("Email"),
@@ -88,7 +94,11 @@ class _EmailPwLoginPageState extends State<EmailPwLoginPage> {
                               }
                             },
                             obscureText: true,
-                            decoration: InputDecoration(errorText: _usermodel.passworderrormessage ==null ? null: _usermodel.passworderrormessage,
+                            decoration: InputDecoration(
+                                errorText:
+                                    _usermodel.passworderrormessage == null
+                                        ? null
+                                        : _usermodel.passworderrormessage,
                                 prefixIcon: Icon(Icons.mail),
                                 hintText: "Şifre giriniz",
                                 label: const Text("Şifre"),
@@ -124,19 +134,36 @@ class _EmailPwLoginPageState extends State<EmailPwLoginPage> {
     if (_email != null && _password != null) {
       _formkey.currentState!.save();
       print(_email! + _password!);
-    }
-    final _userModel = Provider.of<UserModel>(context, listen: false);
-    if (_formType == FormType.login) {
-      UserP? LoggedinUser =
-          await _userModel.signInWithEmailandPassword(_email, _password);
-      if (LoggedinUser != null) {
-        print(LoggedinUser.userId);
-      }
-    } else {
-      UserP? RegisteredUser =
-          await _userModel.createUserWithEmailandPassword(_email, _password);
-      if (RegisteredUser != null) {
-        print(RegisteredUser.userId);
+      final _userModel = Provider.of<UserModel>(context, listen: false);
+      if (_formType == FormType.login) {
+        try {
+          UserP? LoggedinUser =
+              await _userModel.signInWithEmailandPassword(_email, _password);
+          if (LoggedinUser != null) {
+            print(LoggedinUser.userId);
+          }
+        } catch (error) {
+          PlatformDuyarliAlertDiyalog(
+                  baslik: "Kullanıcı bulunamadı",
+                  icerik: "Belirtilen hesap bulunamadı",
+                  anaButonYazisi: "Tamam")
+              .goster(context);
+        }
+      } else {
+        try {
+          UserP? RegisteredUser = await _userModel
+              .createUserWithEmailandPassword(_email, _password);
+          if (RegisteredUser != null) {
+            print(RegisteredUser.userId);
+          }
+        } catch (error) {
+          //print(Errors.goster(error.code) + "Kullanıcı oluşturma hatası");
+          PlatformDuyarliAlertDiyalog(
+            anaButonYazisi: "Tamam",
+            baslik: "Kullanıcı oluşturma hata",
+            icerik: "Mail kullanılıyor",
+          ).goster(context);
+        }
       }
     }
   }

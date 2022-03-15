@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:chat/locator.dart';
 import 'package:chat/models/usermodel.dart';
 import 'package:chat/services/authbase.dart';
 import 'package:chat/services/fakeauthservice.dart';
+import 'package:chat/services/firebase_storage_service.dart';
 import 'package:chat/services/firebaseauthservice.dart';
 import 'package:chat/services/firestore_db_service.dart';
 
@@ -11,6 +14,8 @@ class UserRepository implements AuthBase {
   FirebaseAuthService _firebaseAuthService = locator<FirebaseAuthService>();
   FakeAuthService _fakeAuthService = locator<FakeAuthService>();
   FireStoreDBService _fireStoreDBService = locator<FireStoreDBService>();
+  FirebaseStorageService _fireBaseStorageService =
+      locator<FirebaseStorageService>();
 
   AppMode appMode = AppMode.RELEASE;
 
@@ -19,7 +24,8 @@ class UserRepository implements AuthBase {
     if (appMode == AppMode.DEBUG) {
       return await _fakeAuthService.currentUser();
     } else {
-      return await _firebaseAuthService.currentUser();
+      UserP? user = await _firebaseAuthService.currentUser();
+      return await _fireStoreDBService.readUser(user!.userId);
     }
   }
 
@@ -49,7 +55,7 @@ class UserRepository implements AuthBase {
       UserP? user = await _firebaseAuthService.signInwithGoogle();
       bool result = await _fireStoreDBService.saveUser(user!);
       if (result) {
-        return await _fireStoreDBService.readUser(user.userId );
+        return await _fireStoreDBService.readUser(user.userId);
       } else {
         return null;
       }
@@ -81,6 +87,25 @@ class UserRepository implements AuthBase {
       UserP? user =
           await _firebaseAuthService.signInWithEmailandPassword(email, pw);
       return await _fireStoreDBService.readUser(user!.userId);
+    }
+  }
+
+  Future<bool> updateUserName(String userID, String yeniUserName) async {
+    if (appMode == AppMode.DEBUG) {
+      return false;
+    } else {
+      return await _fireStoreDBService.updateUserName(userID, yeniUserName);
+    }
+  }
+
+  Future<String> uploadFile(String userId, String fileType, File? image) async {
+    if (appMode == AppMode.DEBUG) {
+      return "dosya indirme linki";
+    } else {
+      var profilphotourl =
+          await _fireBaseStorageService.uploadFile(userId, fileType, image!);
+      await _fireStoreDBService.updateProfilFoto(userId,profilphotourl);
+      return profilphotourl;
     }
   }
 }

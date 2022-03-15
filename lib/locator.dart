@@ -1,5 +1,6 @@
 import 'package:chat/repository/userrepository.dart';
 import 'package:chat/services/fakeauthservice.dart';
+import 'package:chat/services/firebase_storage_service.dart';
 import 'package:chat/services/firebaseauthservice.dart';
 import 'package:chat/services/firestore_db_service.dart';
 import 'package:get_it/get_it.dart';
@@ -12,4 +13,6 @@ void setupLocator() {
   locator.registerLazySingleton(() => FakeAuthService());
   locator.registerLazySingleton(() => UserRepository());
   locator.registerLazySingleton(() => FireStoreDBService());
+  locator.registerLazySingleton(() => FirebaseStorageService());
+
 }
