@@ -5,11 +5,14 @@ import 'package:flutter/material.dart';
 class MyCustomButtomNavi extends StatelessWidget {
   const MyCustomButtomNavi(
       {Key? key, required this.currentTab, required this.onSelectedTab,
-      required this.PageCreator})
+      required this.PageCreator,
+      required this.Navigatorkeys})
       : super(key: key);
   final TabItems currentTab;
   final ValueChanged<TabItems> onSelectedTab;
   final Map<TabItems, Widget> PageCreator;
+  final Map<TabItems, GlobalKey<NavigatorState>> Navigatorkeys;
+
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +24,7 @@ class MyCustomButtomNavi extends StatelessWidget {
       tabBuilder: (context, index) {
         final gosterilecektab = TabItems.values[index];
         return CupertinoTabView(
+          navigatorKey: Navigatorkeys[gosterilecektab],
             builder: (context) => PageCreator[gosterilecektab]!);
       },
     );

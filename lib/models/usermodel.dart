@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserP {
@@ -15,7 +17,8 @@ class UserP {
     return {
       "userId": userId,
       "email": email,
-      "userName": userName,
+      "userName":
+          userName ?? email.substring(0, email.indexOf("@")) + RandomSayiUret(),
       "profileUrl": profileUrl ??
           "https://emrealtunbilek.com/wp-content/uploads/2016/10/apple-icon-72x72.png",
       "createdAt": createdAt ?? FieldValue.serverTimestamp(),
@@ -29,14 +32,19 @@ class UserP {
         email = map["email"],
         userName = map["userName"],
         profileUrl = map["profileUrl"],
-        createdAt = (map["createdAt"]as Timestamp ).toDate(),
-        updatedAt = (map["updatedAt"]as Timestamp).toDate(),
+        createdAt = (map["createdAt"] as Timestamp).toDate(),
+        updatedAt = (map["updatedAt"] as Timestamp).toDate(),
         level = map["level"];
 
-        @override
+  @override
   String toString() {
     // TODO: implement toString
-    
-    return email;
+
+    return email + " "+ userName!;
+  }
+
+  String RandomSayiUret() {
+    int randomNumber = Random().nextInt(9999);
+    return randomNumber.toString();
   }
 }

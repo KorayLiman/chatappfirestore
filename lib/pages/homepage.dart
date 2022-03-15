@@ -25,24 +25,36 @@ class _HomePageState extends State<HomePage> {
     return {TabItems.Users: UsersPage(), TabItems.Profile: ProfilePage()};
   }
 
+  Map<TabItems, GlobalKey<NavigatorState>> navigatorKeys = {
+    TabItems.Users: GlobalKey<NavigatorState>(),
+    TabItems.Profile: GlobalKey<NavigatorState>()
+  };
+
   @override
   Widget build(BuildContext context) {
     final _usermodel = Provider.of<UserModel>(context);
-    return Container(
-        child: MyCustomButtomNavi(
-      PageCreator: allPages(),
-      currentTab: _currentTab,
-      onSelectedTab: (seletedtab) {
-        setState(() {
-          _currentTab = seletedtab;
-        });
-        print("selectedtab" + seletedtab.index.toString());
-      },
-    ));
+    return WillPopScope(
+      onWillPop: () async =>
+          !await navigatorKeys[_currentTab]!.currentState!.maybePop(),
+      child: Container(
+          child: MyCustomButtomNavi(
+        PageCreator: allPages(),
+        Navigatorkeys: navigatorKeys,
+        currentTab: _currentTab,
+        onSelectedTab: (seletedtab) {
+          if (seletedtab == _currentTab) {
+            navigatorKeys[seletedtab]!
+                .currentState!
+                .popUntil((route) => route.isFirst);
+          }
+          else{setState(() {
+            _currentTab = seletedtab;
+          });
+          print("selectedtab" + seletedtab.index.toString());}
+
+          
+        },
+      )),
+    );
   }
 }
-
-
-
- 
- 
