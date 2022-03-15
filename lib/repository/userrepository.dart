@@ -12,7 +12,7 @@ class UserRepository implements AuthBase {
   FakeAuthService _fakeAuthService = locator<FakeAuthService>();
   FireStoreDBService _fireStoreDBService = locator<FireStoreDBService>();
 
-  AppMode appMode = AppMode.DEBUG;
+  AppMode appMode = AppMode.RELEASE;
 
   @override
   Future<UserP?> currentUser() async {
@@ -46,8 +46,7 @@ class UserRepository implements AuthBase {
     if (appMode == AppMode.DEBUG) {
       return await _fakeAuthService.signInwithGoogle();
     } else {
-      UserP? user =
-          await _firebaseAuthService.signInwithGoogle();
+      UserP? user = await _firebaseAuthService.signInwithGoogle();
       bool result = await _fireStoreDBService.saveUser(user!);
       if (result) {
         return user;

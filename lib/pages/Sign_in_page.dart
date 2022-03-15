@@ -74,7 +74,9 @@ class SigninPage extends StatelessWidget {
   }
 
   void _AnonymousLogin(BuildContext context) async {
-    final _usermodel = Provider.of<UserModel>(context, listen: false);
+    final _usermodel = Provider.of<UserModel>(
+      context,listen: false
+    );
     UserP? userP = await _usermodel.signInAnonymously();
 
     print(userP!.userId);

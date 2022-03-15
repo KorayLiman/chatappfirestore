@@ -43,11 +43,6 @@ class _HomePageState extends State<HomePage> {
 }
 
 
-/**
- *  Future<bool> _cikisYap(BuildContext context) async {
-    final _usermodel = Provider.of<UserModel>(context, listen: false);
-    bool result = await _usermodel.singOut();
 
-    return result;
-  }
- */
+ 
+ 

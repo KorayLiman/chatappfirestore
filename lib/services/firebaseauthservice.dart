@@ -20,7 +20,7 @@ class FirebaseAuthService implements AuthBase {
     if (user == null) {
       return null;
     }
-    return UserP(userId: user.uid,email: user.email!);
+    return UserP(userId: user.uid, email: user.email??"");
   }
 
   @override
@@ -36,9 +36,8 @@ class FirebaseAuthService implements AuthBase {
   @override
   Future<bool> singOut() async {
     try {
-     
-       await GoogleSignIn().signOut();
-      
+      await GoogleSignIn().signOut();
+
       await _firebaseAuth.signOut();
       return true;
     } catch (error) {
@@ -64,19 +63,22 @@ class FirebaseAuthService implements AuthBase {
   }
 
   @override
-  Future<UserP?> createUserWithEmailandPassword(String? email, String? pw) async{
+  Future<UserP?> createUserWithEmailandPassword(
+      String? email, String? pw) async {
     try {
-      UserCredential credential = await _firebaseAuth.createUserWithEmailAndPassword(email: email!,password: pw!);
+      UserCredential credential = await _firebaseAuth
+          .createUserWithEmailAndPassword(email: email!, password: pw!);
       return _userFromFirebase(credential.user);
     } catch (error) {
-      print("signin anonymously error " + error.toString());
+      print("signin anonymously error1 " + error.toString());
     }
   }
 
   @override
-  Future<UserP?> signInWithEmailandPassword(String? email, String? pw) async{
+  Future<UserP?> signInWithEmailandPassword(String? email, String? pw) async {
     try {
-      UserCredential credential = await _firebaseAuth.signInWithEmailAndPassword(email: email!,password: pw!);
+      UserCredential credential = await _firebaseAuth
+          .signInWithEmailAndPassword(email: email!, password: pw!);
       return _userFromFirebase(credential.user);
     } catch (error) {
       print("signin anonymously error " + error.toString());
