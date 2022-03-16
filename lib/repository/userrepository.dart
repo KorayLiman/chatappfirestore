@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:timeago/timeago.dart' as timeago;
 import 'package:chat/locator.dart';
 import 'package:chat/models/konusma.dart';
 import 'package:chat/models/mesaj.dart';
@@ -141,6 +141,7 @@ class UserRepository implements AuthBase {
     if (appMode == AppMode.DEBUG) {
       return [];
     } else {
+      DateTime _zaman = await _fireStoreDBService.saatiGoster(userId);
       var konusmaListesi =
           await _fireStoreDBService.getAllConversations(userId);
       for (var oankiKonusma in konusmaListesi) {
@@ -150,6 +151,11 @@ class UserRepository implements AuthBase {
           oankiKonusma.konusulanUserName = userListesindekiKullanici!.userName;
           oankiKonusma.konusuluanUserProfileUrl =
               userListesindekiKullanici.profileUrl;
+          oankiKonusma.sonOkunmaZamani = _zaman;
+          timeago.setLocaleMessages("tr", timeago.TrMessages());
+          var _duration =
+              _zaman.difference(oankiKonusma.olusturulma_tarihi!.toDate());
+          oankiKonusma.aradakiFark = timeago.format(_zaman.subtract(_duration),locale: "tr");
         } else {
           print("Aranılan user daha önceden veri tabanından getirilmemiştir.");
           var _veritabanindanokunanuser =
@@ -157,6 +163,11 @@ class UserRepository implements AuthBase {
           oankiKonusma.konusulanUserName = _veritabanindanokunanuser.userName;
           oankiKonusma.konusuluanUserProfileUrl =
               _veritabanindanokunanuser.profileUrl;
+          oankiKonusma.sonOkunmaZamani = _zaman;
+           timeago.setLocaleMessages("tr", timeago.TrMessages());
+          var _duration =
+              _zaman.difference(oankiKonusma.olusturulma_tarihi!.toDate());
+          oankiKonusma.aradakiFark = timeago.format(_zaman.subtract(_duration),locale: "tr");
         }
       }
       return konusmaListesi;

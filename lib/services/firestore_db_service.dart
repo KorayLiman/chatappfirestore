@@ -107,7 +107,7 @@ class FireStoreDBService implements DBBase {
       "son_yollanan_mesaj": kaydidilecekMesaj.mesaj,
       "konusma_goruldu": false,
       "olusturulma_tarihi": FieldValue.serverTimestamp(),
-      "gorulme_tarihi":FieldValue.serverTimestamp()
+      "gorulme_tarihi": FieldValue.serverTimestamp()
     });
     await _firestore
         .collection("konusmalar")
@@ -121,7 +121,7 @@ class FireStoreDBService implements DBBase {
       "son_yollanan_mesaj": kaydidilecekMesaj.mesaj,
       "konusma_goruldu": false,
       "olusturulma_tarihi": FieldValue.serverTimestamp(),
-      "gorulme_tarihi":FieldValue.serverTimestamp()
+      "gorulme_tarihi": FieldValue.serverTimestamp()
     });
 
     return true;
@@ -135,12 +135,23 @@ class FireStoreDBService implements DBBase {
         .orderBy("olusturulma_tarihi", descending: true)
         .get();
     List<Konusma> tumKonusmalar = [];
- 
+
     for (var konusma in querySnapshot.docs) {
       Konusma kon = Konusma.fromMap(konusma.data() as Map<String, dynamic>);
       tumKonusmalar.add(kon);
     }
-    
+
     return tumKonusmalar;
+  }
+
+  @override
+  Future<DateTime> saatiGoster(String userId) async {
+    await _firestore
+        .collection("server")
+        .doc(userId)
+        .set({"saat": FieldValue.serverTimestamp()});
+    var okunanMap = await _firestore.collection("server").doc(userId).get();
+    Timestamp okunanTarih = okunanMap.data()!["saat"];
+    return okunanTarih.toDate();
   }
 }

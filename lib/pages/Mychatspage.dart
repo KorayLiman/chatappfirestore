@@ -31,48 +31,57 @@ class _MyChatsState extends State<MyChats> {
             );
           } else {
             var tumKonusmalar = snapshot.data!;
-            if(tumKonusmalar.length >0){
-return RefreshIndicator(
-              onRefresh: () {
-                return _konusmalarimListesiniYenile();
-              },
-              child: ListView.builder(
-                  itemCount: tumKonusmalar.length,
-                  itemBuilder: (context, index) {
-                    var oankikonusma = tumKonusmalar[index];
-                    return ListTile(onTap: (){
-                      Navigator.of(context, rootNavigator: true)
-                                .push(MaterialPageRoute(
-                              builder: (context) =>  KonusmaPage(currentUser: _usermodel.user!, sohbetedilenuser: UserP.idveResim(userId: oankikonusma.kimle_konusuyor,  profileUrl: oankikonusma.konusuluanUserProfileUrl)),
-                            ));
-                    },
-                      title: Text(oankikonusma.son_yollanan_mesaj!),
-                      subtitle: Text(oankikonusma.konusulanUserName!),
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.transparent,
-                        backgroundImage: NetworkImage(
-                            oankikonusma.konusuluanUserProfileUrl!),
-                      ),
-                    );
-                  }),
-            );
-            }else{
+            if (tumKonusmalar.length > 0) {
               return RefreshIndicator(
-                    child: SingleChildScrollView(
-                      physics: AlwaysScrollableScrollPhysics(),
-                      child: Container(height: MediaQuery.of(context).size.height-150,
-                          child: Center(
-                        child: Column(
-                          children: [
-                            Icon(Icons.supervised_user_circle),
-                            const Text("Henüz kullanıcı yok")
-                          ],
+                onRefresh: () {
+                  return _konusmalarimListesiniYenile();
+                },
+                child: ListView.builder(
+                    itemCount: tumKonusmalar.length,
+                    itemBuilder: (context, index) {
+                      var oankikonusma = tumKonusmalar[index];
+                      return ListTile(
+                        onTap: () {
+                          Navigator.of(context, rootNavigator: true)
+                              .push(MaterialPageRoute(
+                            builder: (context) => KonusmaPage(
+                                currentUser: _usermodel.user!,
+                                sohbetedilenuser: UserP.idveResim(
+                                    userId: oankikonusma.kimle_konusuyor,
+                                    profileUrl:
+                                        oankikonusma.konusuluanUserProfileUrl)),
+                          ));
+                        },
+                        title: Text(oankikonusma.son_yollanan_mesaj!),
+                        subtitle: Text(
+                            oankikonusma.konusulanUserName.toString() +
+                                " " +
+                                oankikonusma.aradakiFark.toString()),
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          backgroundImage: NetworkImage(
+                              oankikonusma.konusuluanUserProfileUrl!),
                         ),
-                      )),
-                    ),
-                    onRefresh: _konusmalarimListesiniYenile);
+                      );
+                    }),
+              );
+            } else {
+              return RefreshIndicator(
+                  child: SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    child: Container(
+                        height: MediaQuery.of(context).size.height - 150,
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Icon(Icons.supervised_user_circle),
+                              const Text("Henüz kullanıcı yok")
+                            ],
+                          ),
+                        )),
+                  ),
+                  onRefresh: _konusmalarimListesiniYenile);
             }
-            
           }
         },
         future: _usermodel.getAllConversations(_usermodel.user!.userId),
@@ -93,9 +102,7 @@ return RefreshIndicator(
     }
   }
 
-  Future<void> _konusmalarimListesiniYenile() async{
-setState(() {
-  
-});
+  Future<void> _konusmalarimListesiniYenile() async {
+    setState(() {});
   }
 }

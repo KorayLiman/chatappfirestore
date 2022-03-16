@@ -9,10 +9,13 @@ class Konusma {
   final Timestamp gorulme_tarihi;
   String? konusulanUserName;
   String? konusuluanUserProfileUrl;
+  DateTime? sonOkunmaZamani;
+  String? aradakiFark;
 
   Konusma(
       {required this.konusma_sahibi,
-this.konusulanUserName,this.konusuluanUserProfileUrl,
+      this.konusulanUserName,
+      this.konusuluanUserProfileUrl,
       required this.kimle_konusuyor,
       required this.konusma_goruldu,
       this.olusturulma_tarihi,

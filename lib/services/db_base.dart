@@ -12,4 +12,5 @@ abstract class DBBase {
   Future<List<Konusma>> getAllConversations(String userId);
   Stream<List<Mesaj>> getMessages(String currentUserId, String konusulanUserId);
   Future<bool> saveMessage(Mesaj kaydidilecekMesaj);
+  Future<DateTime> saatiGoster(String userId);
 }
