@@ -1,10 +1,13 @@
 import 'dart:io';
 
 import 'package:chat/locator.dart';
+import 'package:chat/models/mesaj.dart';
 import 'package:chat/models/usermodel.dart';
 import 'package:chat/repository/userrepository.dart';
 import 'package:chat/services/authbase.dart';
 import 'package:flutter/material.dart';
+
+import '../models/konusma.dart';
 
 enum ViewState { idle, busy }
 
@@ -145,5 +148,23 @@ class UserModel with ChangeNotifier implements AuthBase {
   Future<String> uploadFile(String userId, String fileType, File? image) async {
     var link = await _userRepository.uploadFile(userId, fileType, image);
     return link;
+  }
+
+  Future<List<UserP>> getAllUsers() async {
+    var allUsers = await _userRepository.getAllUsers();
+    return allUsers;
+  }
+
+  Stream<List<Mesaj>> getMessages(
+      String currentUserId, String sohbetedilenuserId) {
+    return _userRepository.getMessages(currentUserId, sohbetedilenuserId);
+  }
+
+  Future<bool> saveMessage(Mesaj kaydidilecekMesaj) async{
+    return await _userRepository.saveMessage(kaydidilecekMesaj);
+  }
+
+  Future<List<Konusma>> getAllConversations(String userId)async {
+    return await _userRepository.getAllConversations(userId);
   }
 }

@@ -1,6 +1,7 @@
 import 'package:chat/common_widgets/custombottomnavi.dart';
 import 'package:chat/common_widgets/tabitems.dart';
 import 'package:chat/models/usermodel.dart';
+import 'package:chat/pages/Mychatspage.dart';
 import 'package:chat/pages/Profilepage.dart';
 import 'package:chat/pages/userspage.dart';
 
@@ -22,12 +23,13 @@ class _HomePageState extends State<HomePage> {
   TabItems _currentTab = TabItems.Users;
 
   Map<TabItems, Widget> allPages() {
-    return {TabItems.Users: UsersPage(), TabItems.Profile: ProfilePage()};
+    return {TabItems.Users: UsersPage(), TabItems.MyChats:MyChats(),TabItems.Profile: ProfilePage()};
   }
 
   Map<TabItems, GlobalKey<NavigatorState>> navigatorKeys = {
     TabItems.Users: GlobalKey<NavigatorState>(),
-    TabItems.Profile: GlobalKey<NavigatorState>()
+    TabItems.Profile: GlobalKey<NavigatorState>(),
+    TabItems.MyChats: GlobalKey<NavigatorState>()
   };
 
   @override

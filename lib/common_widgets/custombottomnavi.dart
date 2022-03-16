@@ -18,7 +18,8 @@ class MyCustomButtomNavi extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
-        items: [_NavItem(TabItems.Users), _NavItem(TabItems.Profile)],
+        items: [_NavItem(TabItems.Users),
+        _NavItem(TabItems.MyChats), _NavItem(TabItems.Profile)],
         onTap: (index) => onSelectedTab(TabItems.values[index]),
       ),
       tabBuilder: (context, index) {

@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserP {
   final String userId;
-  String email;
+  String? email;
   String? userName;
   String? profileUrl;
   DateTime? createdAt;
@@ -18,7 +18,7 @@ class UserP {
       "userId": userId,
       "email": email,
       "userName":
-          userName ?? email.substring(0, email.indexOf("@")) + RandomSayiUret(),
+          userName ?? email!.substring(0, email!.indexOf("@")) + RandomSayiUret(),
       "profileUrl": profileUrl ??
           "https://emrealtunbilek.com/wp-content/uploads/2016/10/apple-icon-72x72.png",
       "createdAt": createdAt ?? FieldValue.serverTimestamp(),
@@ -36,11 +36,13 @@ class UserP {
         updatedAt = (map["updatedAt"] as Timestamp).toDate(),
         level = map["level"];
 
+UserP.idveResim({required this.userId,required this.profileUrl});
+
   @override
   String toString() {
     // TODO: implement toString
 
-    return email + " "+ userName!;
+    return email! + " "+ userName!;
   }
 
   String RandomSayiUret() {

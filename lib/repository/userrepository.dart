@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:chat/locator.dart';
+import 'package:chat/models/konusma.dart';
+import 'package:chat/models/mesaj.dart';
 import 'package:chat/models/usermodel.dart';
 import 'package:chat/services/authbase.dart';
 import 'package:chat/services/fakeauthservice.dart';
@@ -18,7 +20,7 @@ class UserRepository implements AuthBase {
       locator<FirebaseStorageService>();
 
   AppMode appMode = AppMode.RELEASE;
-
+  List<UserP> allUserList = [];
   @override
   Future<UserP?> currentUser() async {
     if (appMode == AppMode.DEBUG) {
@@ -104,8 +106,69 @@ class UserRepository implements AuthBase {
     } else {
       var profilphotourl =
           await _fireBaseStorageService.uploadFile(userId, fileType, image!);
-      await _fireStoreDBService.updateProfilFoto(userId,profilphotourl);
+      await _fireStoreDBService.updateProfilFoto(userId, profilphotourl);
       return profilphotourl;
     }
+  }
+
+  Future<List<UserP>> getAllUsers() async {
+    if (appMode == AppMode.DEBUG) {
+      return [];
+    } else {
+      allUserList = await _fireStoreDBService.getAllUsers();
+      return allUserList;
+    }
+  }
+
+  Stream<List<Mesaj>> getMessages(
+      String currentUserId, String sohbetedilenuserId) {
+    if (appMode == AppMode.DEBUG) {
+      return Stream.empty();
+    } else {
+      return _fireStoreDBService.getMessages(currentUserId, sohbetedilenuserId);
+    }
+  }
+
+  Future<bool> saveMessage(Mesaj kaydidilecekMesaj) async {
+    if (appMode == AppMode.DEBUG) {
+      return true;
+    } else {
+      return _fireStoreDBService.saveMessage(kaydidilecekMesaj);
+    }
+  }
+
+  Future<List<Konusma>> getAllConversations(String userId) async {
+    if (appMode == AppMode.DEBUG) {
+      return [];
+    } else {
+      var konusmaListesi =
+          await _fireStoreDBService.getAllConversations(userId);
+      for (var oankiKonusma in konusmaListesi) {
+        var userListesindekiKullanici =
+            listedeUserBul(oankiKonusma.kimle_konusuyor);
+        if (userListesindekiKullanici != null) {
+          oankiKonusma.konusulanUserName = userListesindekiKullanici!.userName;
+          oankiKonusma.konusuluanUserProfileUrl =
+              userListesindekiKullanici.profileUrl;
+        } else {
+          print("Aranılan user daha önceden veri tabanından getirilmemiştir.");
+          var _veritabanindanokunanuser =
+              await _fireStoreDBService.readUser(oankiKonusma.kimle_konusuyor);
+          oankiKonusma.konusulanUserName = _veritabanindanokunanuser.userName;
+          oankiKonusma.konusuluanUserProfileUrl =
+              _veritabanindanokunanuser.profileUrl;
+        }
+      }
+      return konusmaListesi;
+    }
+  }
+
+  UserP? listedeUserBul(String userID) {
+    for (int i = 0; i < allUserList.length; i++) {
+      if (allUserList[i].userName == userID) {
+        return allUserList[i];
+      }
+    }
+    return null;
   }
 }
