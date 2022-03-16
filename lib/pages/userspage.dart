@@ -1,5 +1,6 @@
 import 'package:chat/models/usermodel.dart';
 import 'package:chat/pages/konusmapage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,10 +14,25 @@ class UsersPage extends StatefulWidget {
 }
 
 class _UsersPageState extends State<UsersPage> {
+  List<UserP> tumkullanicilar = [];
+  bool _isLoading = false;
+  bool _hasMore = true;
+  int _getirilecekElemanSayisi = 10;
+  UserP? _ensongetirilenuser;
+  ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getUser(_ensongetirilenuser);
+  }
+
   @override
   Widget build(BuildContext context) {
     final _userModel = Provider.of<UserModel>(context);
     _userModel.getAllUsers();
+
     return Scaffold(
         appBar: AppBar(
           title: const Text("Users"),
@@ -25,85 +41,35 @@ class _UsersPageState extends State<UsersPage> {
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true)
                       .push(MaterialPageRoute(
-                    builder: (context) => TestPage(),
+                    builder: (context) => Container(),
                   ));
                 },
                 icon: Icon(Icons.title))
           ],
         ),
-        body: FutureBuilder<List<UserP>>(
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              var allUsers = snapshot.data;
-              if (allUsers!.length - 1 > 0) {
-                return RefreshIndicator(
-                  onRefresh: () {
-                    return kullanicilarlistesiniguncelle();
-                  },
-                  child: ListView.builder(
-                    itemCount: allUsers.length,
-                    itemBuilder: (context, index) {
-                      var currentUser = snapshot.data![index];
-                      if (snapshot.data![index].userId !=
-                          _userModel.user!.userId) {
-                        return ListTile(
-                          onTap: () {
-                            Navigator.of(context, rootNavigator: true)
-                                .push(MaterialPageRoute(
-                              builder: (context) => KonusmaPage(
-                                currentUser: _userModel.user!,
-                                sohbetedilenuser: currentUser,
-                              ),
-                            ));
-                          },
-                          title: Text(snapshot.data![index].userName!),
-                          subtitle: Text(currentUser.email!),
-                          leading: CircleAvatar(
-                            backgroundImage:
-                                NetworkImage(currentUser.profileUrl!),
-                            backgroundColor: Colors.transparent,
-                          ),
-                        );
-                      } else {
-                        return Center(child: Container());
-                      }
-                    },
-                  ),
-                );
-              } else {
-                return RefreshIndicator(
-                    child: SingleChildScrollView(
-                      physics: AlwaysScrollableScrollPhysics(),
-                      child: Container(height: MediaQuery.of(context).size.height-150,
-                          child: Center(
-                        child: Column(
-                          children: [
-                            Icon(Icons.supervised_user_circle),
-                            const Text("Henüz kullanıcı yok")
-                          ],
-                        ),
-                      )),
-                    ),
-                    onRefresh: kullanicilarlistesiniguncelle);
-              }
-            } else {
-              return CircularProgressIndicator();
-            }
-          },
-          future: _userModel.getAllUsers(),
-        ));
+        body: Container());
   }
 
-  Future<void> kullanicilarlistesiniguncelle() async {
-    setState(() {});
-  }
-}
-
-class TestPage extends StatelessWidget {
-  const TestPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold();
+  getUser(UserP? ensongetirilenuser) async {
+    QuerySnapshot querySnapshot;
+    if (ensongetirilenuser == null) {
+      querySnapshot = await FirebaseFirestore.instance
+          .collection("users")
+          .orderBy("userName")
+          .limit(_getirilecekElemanSayisi)
+          .get();
+    } else {
+      querySnapshot = await FirebaseFirestore.instance
+          .collection("users")
+          .orderBy("userName")
+          .startAfter([ensongetirilenuser.userName])
+          .limit(_getirilecekElemanSayisi)
+          .get();
+    }
+    for (var snap in querySnapshot.docs) {
+      UserP user = UserP.fromMap(snap.data() as Map<String, dynamic>);
+      tumkullanicilar.add(user);
+    }
+    ensongetirilenuser = tumkullanicilar.last;
   }
 }
